@@ -1,8 +1,5 @@
 # shiro-redis
 
-[![Build Status](https://travis-ci.org/alexxiyang/shiro-redis.svg?branch=master)](https://travis-ci.org/alexxiyang/shiro-redis)
-
-
 shiro only provide the support of ehcache and concurrentHashMap. Here is an implement of redis cache can be used by shiro. Hope it will help you!
 
 How to use it?
@@ -10,15 +7,7 @@ How to use it?
 
 You can choose these 2 ways to include shiro-redis into your project
 * use "git clone https://github.com/alexxiyang/shiro-redis.git" to clone project to your local workspace and build jar file by your self
-* add maven dependency 
-
-```xml
-    <dependency>
-  		<groupId>org.crazycake</groupId>
-  		<artifactId>shiro-redis</artifactId>
-  		<version>2.4.2.1-RELEASE</version>
-  	</dependency>
-```
+* add maven dependency
 
 How to configure ?
 ===========
@@ -28,7 +17,7 @@ shiro.ini:
 
 ```properties
 #redisManager
-redisManager = org.crazycake.shiro.RedisManager
+redisManager = com.baayso.shiro.redis.RedisManager
 #optional if you don't specify host the default value is 127.0.0.1
 redisManager.host = 127.0.0.1
 #optional , default value: 6379
@@ -41,14 +30,14 @@ redisManager.timeout = 0
 redisManager.password = 
 
 #============redisSessionDAO=============
-redisSessionDAO = org.crazycake.shiro.RedisSessionDAO
+redisSessionDAO = com.baayso.shiro.redis.RedisSessionDAO
 redisSessionDAO.redisManager = $redisManager
 sessionManager = org.apache.shiro.web.session.mgt.DefaultWebSessionManager
 sessionManager.sessionDAO = $redisSessionDAO
 securityManager.sessionManager = $sessionManager
 
 #============redisCacheManager===========
-cacheManager = org.crazycake.shiro.RedisCacheManager
+cacheManager = com.baayso.shiro.redis.RedisCacheManager
 cacheManager.redisManager = $redisManager
 #custom your redis key prefix, if you doesn't define this parameter shiro-redis will use 'shiro_redis_session:' as default prefix
 cacheManager.keyPrefix = users:security:authz:
@@ -60,7 +49,6 @@ spring.xml:
 <!-- shiro filter -->
 <bean id="ShiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 	<property name="securityManager" ref="securityManager"/>
-	
 	<!--
 	<property name="loginUrl" value="/login.jsp"/>
 	<property name="successUrl" value="/home.jsp"/>  
@@ -82,7 +70,6 @@ spring.xml:
 			/unauthorized.jsp = anon
 			/css/** = anon
 			/js/** = anon
-			
 			/** = authc
 		</value>
 	</property>
@@ -90,23 +77,20 @@ spring.xml:
 
 <!-- shiro securityManager -->
 <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-
 	<!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
-	
 	<!-- sessionManager -->
 	<property name="sessionManager" ref="sessionManager" />
-	
 	<!-- cacheManager -->
 	<property name="cacheManager" ref="cacheManager" />
-	
 	<!-- By default the servlet container sessions will be used.  Uncomment this line
 		 to use shiro's native sessions (see the JavaDoc for more): -->
 	<!-- <property name="sessionMode" value="native"/> -->
 </bean>
+
 <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>	
 
 <!-- shiro redisManager -->
-<bean id="redisManager" class="org.crazycake.shiro.RedisManager">
+<bean id="redisManager" class="com.baayso.shiro.redis.RedisManager">
 	<property name="host" value="127.0.0.1"/>
 	<property name="port" value="6379"/>
 	<property name="expire" value="1800"/>
@@ -117,7 +101,7 @@ spring.xml:
 </bean>
 
 <!-- redisSessionDAO -->
-<bean id="redisSessionDAO" class="org.crazycake.shiro.RedisSessionDAO">
+<bean id="redisSessionDAO" class="com.baayso.shiro.redis.RedisSessionDAO">
 	<property name="redisManager" ref="redisManager" />
 </bean>
 
@@ -127,7 +111,7 @@ spring.xml:
 </bean>
 
 <!-- cacheManager -->
-<bean id="cacheManager" class="org.crazycake.shiro.RedisCacheManager">
+<bean id="cacheManager" class="com.baayso.shiro.redis.RedisCacheManager">
 	<property name="redisManager" ref="redisManager" />
 </bean>
 ```
@@ -136,7 +120,3 @@ spring.xml:
 > Shiro-redis don't support SimpleAuthenticationInfo created by this constructor `org.apache.shiro.authc.SimpleAuthenticationInfo.SimpleAuthenticationInfo(Object principal, Object hashedCredentials, ByteSource credentialsSalt, String realmName)`.
 > Please use `org.apache.shiro.authc.SimpleAuthenticationInfo.SimpleAuthenticationInfo(Object principal, Object hashedCredentials, String realmName)` instead.
 
-If you found any bugs
-===========
-
-Please send email to idante@qq.com
