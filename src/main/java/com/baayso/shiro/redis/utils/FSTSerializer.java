@@ -42,13 +42,13 @@ public class FSTSerializer implements Serializer {
         }
 
         byte[] result = null;
-        ByteArrayOutputStream bytesOutputStream = new ByteArrayOutputStream(128);
-        FSTObjectOutput fstOutputStream = null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(128);
+        FSTObjectOutput out = null;
 
         try {
-            fstOutputStream = new FSTObjectOutput(bytesOutputStream);
-            fstOutputStream.writeObject(obj);
-            result = bytesOutputStream.toByteArray();
+            out = new FSTObjectOutput(stream);
+            out.writeObject(obj);
+            result = stream.toByteArray();
         }
         catch (IOException e) {
             logger.error("Failed to serialize.", e);
@@ -57,9 +57,9 @@ public class FSTSerializer implements Serializer {
             logger.error("Failed to serialize.", e);
         }
         finally {
-            if (null != fstOutputStream) {
+            if (null != out) {
                 try {
-                    fstOutputStream.close();
+                    out.close();
                 }
                 catch (IOException e) {
                 }
@@ -76,11 +76,11 @@ public class FSTSerializer implements Serializer {
         }
 
         Object result = null;
-        FSTObjectInput fstObjectInput = null;
+        FSTObjectInput in = null;
 
         try {
-            fstObjectInput = new FSTObjectInput(new ByteArrayInputStream(bytes));
-            result = fstObjectInput.readObject();
+            in = new FSTObjectInput(new ByteArrayInputStream(bytes));
+            result = in.readObject();
         }
         catch (ClassNotFoundException e) {
             logger.error("Class of a serialized object cannot be found.", e);
@@ -92,9 +92,9 @@ public class FSTSerializer implements Serializer {
             logger.error("Failed to deserialize.", e);
         }
         finally {
-            if (null != fstObjectInput) {
+            if (null != in) {
                 try {
-                    fstObjectInput.close();
+                    in.close();
                 }
                 catch (IOException e) {
                 }

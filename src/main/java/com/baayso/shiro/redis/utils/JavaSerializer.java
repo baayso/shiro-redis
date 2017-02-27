@@ -41,12 +41,12 @@ public class JavaSerializer implements Serializer {
         }
 
         byte[] result = null;
-        ByteArrayOutputStream bytesOutputStream = new ByteArrayOutputStream(128);
-        ObjectOutputStream objectOutputStream = null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(128);
+        ObjectOutputStream out = null;
         try {
-            objectOutputStream = new ObjectOutputStream(bytesOutputStream);
-            objectOutputStream.writeObject(obj);
-            result = bytesOutputStream.toByteArray();
+            out = new ObjectOutputStream(stream);
+            out.writeObject(obj);
+            result = stream.toByteArray();
         }
         catch (IOException e) {
             logger.error("Failed to serialize.", e);
@@ -55,9 +55,9 @@ public class JavaSerializer implements Serializer {
             logger.error("Failed to serialize.", e);
         }
         finally {
-            if (null != objectOutputStream) {
+            if (null != out) {
                 try {
-                    objectOutputStream.close();
+                    out.close();
                 }
                 catch (IOException e) {
                 }
@@ -74,11 +74,11 @@ public class JavaSerializer implements Serializer {
         }
 
         Object result = null;
-        ObjectInputStream objectOutputStream = null;
+        ObjectInputStream in = null;
 
         try {
-            objectOutputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            result = objectOutputStream.readObject();
+            in = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            result = in.readObject();
         }
         catch (ClassNotFoundException e) {
             logger.error("Class of a serialized object cannot be found.", e);
@@ -90,9 +90,9 @@ public class JavaSerializer implements Serializer {
             logger.error("Failed to deserialize.", e);
         }
         finally {
-            if (null != objectOutputStream) {
+            if (null != in) {
                 try {
-                    objectOutputStream.close();
+                    in.close();
                 }
                 catch (IOException e) {
                 }
